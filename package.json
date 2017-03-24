@@ -26,7 +26,6 @@
   },
   "homepage": "https://github.com/surikaterna/slf-sentry#readme",
   "dependencies": {
-    "debug": "^2.2.0",
     "raven": "^1.2.0"
   },
   "devDependencies": {
