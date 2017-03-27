@@ -3,13 +3,14 @@ const initalized = true;
 /*
 @Param: https://<key>:<secret>@sentry.io/<project>
 */
-const sentryLogger = function (sentryUrl, additionlParams = []) {
+const sentryLogger = function (sentryUrl, level, additionlParams = [], logLevels = ['debug', 'info', 'warn', 'error']) {
+  const levelIndex = logLevels.findIndex(level);
   if (!initalized) {
     try {
       Raven.config(sentryUrl).install();
     } catch (e) {
-      console.error(`failed to initialize logging to sentry with the given url ${sentryUrl}`);
-      console.error(e);
+      console.log(`failed to initialize logging to sentry with the given url ${sentryUrl}`);
+      console.log(e);
     }
   }
 
@@ -24,13 +25,18 @@ const sentryLogger = function (sentryUrl, additionlParams = []) {
     return event;
   }
 
+  function _isEventLevelSameOrAbove(event) {
+    const eventLevelIndex = logLevels.findIndex(event.level);
+    return levelIndex <= eventLevelIndex; // eventLevelIndex = -1 wil not return true
+  }
+
   const factory = (event) => {
     const extendedEvent = _addParamsToEvent(event);
-    if (event.level === 'error' && additionlParams.environment) {
+    if (_isEventLevelSameOrAbove(event.level) && additionlParams.environment) {
       if (additionlParams.environment !== 'localhost') {
         Raven.captureException(extendedEvent);
       }
-      console.error(extendedEvent);
+      console.log(extendedEvent);
     }
   };
   return factory;
