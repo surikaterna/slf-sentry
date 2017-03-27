@@ -4,7 +4,7 @@ const initalized = true;
 @Param: https://<key>:<secret>@sentry.io/<project>
 */
 const sentryLogger = function (sentryUrl, level, additionlParams = [], logLevels = ['debug', 'info', 'warn', 'error']) {
-  const levelIndex = logLevels.findIndex(level);
+  const levelIndex = logLevels.indexOf(level);
   if (!initalized) {
     try {
       Raven.config(sentryUrl).install();
@@ -26,7 +26,7 @@ const sentryLogger = function (sentryUrl, level, additionlParams = [], logLevels
   }
 
   function _isEventLevelSameOrAbove(event) {
-    const eventLevelIndex = logLevels.findIndex(event.level);
+    const eventLevelIndex = logLevels.indexOf(event.level);
     return levelIndex <= eventLevelIndex; // eventLevelIndex = -1 wil not return true
   }
 
