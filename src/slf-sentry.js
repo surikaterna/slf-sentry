@@ -32,11 +32,8 @@ const sentryLogger = function (sentryUrl, level, additionlParams = [], logLevels
 
   const factory = (event) => {
     const extendedEvent = _addParamsToEvent(event);
-    if (_isEventLevelSameOrAbove(event.level) && additionlParams.environment) {
-      if (additionlParams.environment !== 'localhost') {
-        Raven.captureException(extendedEvent);
-      }
-      console.log(extendedEvent);
+    if (_isEventLevelSameOrAbove(event.level) && additionlParams.environment && additionlParams.environment !== 'localhost') {
+      Raven.captureException(extendedEvent);
     }
   };
   return factory;
