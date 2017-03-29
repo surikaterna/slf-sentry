@@ -19,6 +19,10 @@ const sentryLogger = function (sentryUrl, level, additionlParams = [], logLevels
     additionlParams = {};
   }
 
+  function _getErrorIfAny(event) {
+    return event.params.find((param) => param instanceof Error);
+  }
+
   function _addParamsToEvent(event) {
     Object.keys(additionlParams).forEach((key) => {
       event[key] = additionlParams[key];
@@ -34,7 +38,12 @@ const sentryLogger = function (sentryUrl, level, additionlParams = [], logLevels
   const factory = (event) => {
     const extendedEvent = _addParamsToEvent(event);
     if (_isEventLevelSameOrAbove(event.level) && additionlParams.environment && additionlParams.environment !== 'localhost') {
-      Raven.captureMessage(JSON.stringify(extendedEvent.params), extendedEvent);
+      const error = _getErrorIfAny(extendedEvent);
+      if (error) {
+        Raven.captureException(error, extendedEvent);
+      } else {
+        Raven.captureMessage(JSON.stringify(extendedEvent.params), extendedEvent);
+      }
     }
   };
   return factory;
