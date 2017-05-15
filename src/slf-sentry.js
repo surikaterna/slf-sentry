@@ -1,12 +1,13 @@
-const Raven = require('raven');
+let Raven;
 let isInitialized = false;
 /*
 @Param: https://<key>:<secret>@sentry.io/<project>
 */
-const sentryLogger = function (sentryUrl, level, additionlParams = [], logLevels = ['debug', 'info', 'warn', 'error']) {
+const sentryLogger = function (raven, sentryUrl, level, additionlParams = [], logLevels = ['debug', 'info', 'warn', 'error']) {
   const levelIndex = logLevels.indexOf(level);
   if (!isInitialized) {
     try {
+      Raven = raven;
       Raven.config(sentryUrl).install();
       isInitialized = true;
     } catch (e) {
