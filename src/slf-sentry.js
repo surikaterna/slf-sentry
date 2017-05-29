@@ -1,3 +1,4 @@
+import util from 'util';
 let Raven;
 let isInitialized = false;
 /*
@@ -41,9 +42,9 @@ const sentryLogger = function (raven, sentryUrl, level, additionlParams = [], lo
     if (_isEventLevelSameOrAbove(event.level) && additionlParams.environment && additionlParams.environment !== 'localhost') {
       const error = _getErrorIfAny(extendedEvent);
       if (error) {
-        Raven.captureException(error, extendedEvent);
+        Raven.captureException(util.inspect(extendedEvent.params), extendedEvent);
       } else {
-        Raven.captureMessage(JSON.stringify(extendedEvent.params), extendedEvent);
+        Raven.captureMessage(util.inspect(extendedEvent.params), extendedEvent);
       }
     }
   };

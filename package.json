@@ -1,6 +1,6 @@
 {
   "name": "slf-sentry",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Surikat Log Facade, sentry driver",
   "main": "lib/index.js",
   "scripts": {
