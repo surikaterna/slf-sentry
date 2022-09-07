@@ -1,1 +1,1 @@
-module.exports = require('./lib/slf-sentry');
+module.exports = require('./lib/sentryLogger');
