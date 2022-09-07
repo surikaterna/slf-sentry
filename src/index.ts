@@ -1,4 +1,6 @@
-import createSlfSentryDebugDriver from './createSlfSentryDebugDriver';
+import createSlfDriver from './createSlfDriver';
 
-export * from './createSlfSentryDriver'
-export default createSlfSentryDebugDriver;
+export * from './createSlfSentryDebugDriver';
+export * from './createSlfSentryDriver';
+
+export default createSlfDriver;
