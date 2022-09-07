@@ -12,7 +12,7 @@ let isInitialized = false;
 
 export default function createSlfSentryDriver(
   sentryUrl: string,
-  {debug, environment = 'dev', level, levels = ['error']}: CreateSlfSentryLoggerOptions = {
+  { debug, environment = 'dev', level, levels = ['error'] }: CreateSlfSentryLoggerOptions = {
     level: 'error'
   }
 ) {
@@ -28,13 +28,15 @@ export default function createSlfSentryDriver(
       });
       isInitialized = true;
     } catch (err) {
+      // eslint-disable-next-line no-console
       console.log('Failed to initialize logging to Sentry with the given url: %s', sentryUrl);
+      // eslint-disable-next-line no-console
       console.error(err);
     }
   }
 
   function getErrorIfAny(event: Event): Error | undefined {
-    return event.params.find((param) => param instanceof Error);
+    return event.params.find((param) => param instanceof Error) as Error | undefined;
   }
 
   function checkIsEventLevelSameOrAbove(eventLogLevel: string): boolean {
@@ -59,8 +61,8 @@ export default function createSlfSentryDriver(
       scope.setLevel(event.level as SeverityLevel);
 
       const params = event.params;
-      const msg = params.slice(0, 1)[0];
-      const extras = params.slice(1);
+      const msg = params.slice(0, 1)[0] as string;
+      const extras: Array<unknown> = params.slice(1);
 
       extras.forEach((extra, index) => {
         scope.setExtra(`param-${index + 1}`, extra);
