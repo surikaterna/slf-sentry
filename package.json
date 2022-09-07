@@ -43,7 +43,9 @@
     "typescript": "^4.8.2"
   },
   "dependencies": {
-    "@sentry/node": "^7.12.1",
+    "@sentry/node": "^7.12.1"
+  },
+  "peerDependencies": {
     "slf": "^2.0.2",
     "slf-debug": "^0.3.0"
   }
