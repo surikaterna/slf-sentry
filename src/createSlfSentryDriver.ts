@@ -3,7 +3,7 @@ import { Event } from 'slf';
 
 export interface CreateSlfSentryLoggerOptions {
   debug?: boolean;
-  level: string;
+  level?: string;
   environment?: string;
   levels?: Array<string>;
 }
@@ -12,9 +12,12 @@ let isInitialized = false;
 
 export default function createSlfSentryDriver(
   sentryUrl: string,
-  { debug, environment = 'dev', level, levels = ['error'] }: CreateSlfSentryLoggerOptions = {
-    level: 'error'
-  }
+  {
+    debug,
+    environment = process.env.SENTRY_ENV ?? 'dev',
+    level = 'error',
+    levels = ['error']
+  }: CreateSlfSentryLoggerOptions = {}
 ) {
   const levelIndex = levels.indexOf(level);
 
