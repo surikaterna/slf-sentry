@@ -38,6 +38,7 @@
     "@swc/core": "^1.2.248",
     "@swc/jest": "^0.2.22",
     "@types/jest": "^29.0.0",
+    "@types/lodash": "^4.14.186",
     "@types/node": "^18.7.15",
     "concurrently": "^7.3.0",
     "eslint": "^8.23.0",
@@ -49,7 +50,9 @@
     "typescript": "^4.8.2"
   },
   "dependencies": {
-    "@sentry/node": "^7.12.1"
+    "@sentry/node": "^7.12.1",
+    "lodash": "^4.17.21",
+    "tapeworm": "^0.4.0"
   },
   "peerDependencies": {
     "slf": "^2.0.2",
