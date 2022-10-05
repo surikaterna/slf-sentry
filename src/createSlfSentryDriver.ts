@@ -1,5 +1,17 @@
 import { captureException, captureMessage, init, SeverityLevel, withScope } from '@sentry/node';
 import { Event } from 'slf';
+import { some } from 'lodash';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import ConcurrencyError from 'tapeworm/lib/persistence/concurrency_error';
+
+const IGNORED_ERRORS = [ConcurrencyError];
+const isIgnoredSentryError = (event: Event) => {
+  if (event.level === 'error') {
+    return some(event.params, (p) => some(IGNORED_ERRORS, (errorClass) => p instanceof errorClass));
+  }
+  return false;
+};
 
 export interface CreateSlfSentryLoggerOptions {
   debug?: boolean;
@@ -49,6 +61,10 @@ export default function createSlfSentryDriver(
 
   return (event: Event) => {
     if (!checkIsEventLevelSameOrAbove(event.level)) {
+      return;
+    }
+
+    if (isIgnoredSentryError(event)) {
       return;
     }
 
