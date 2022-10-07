@@ -3,7 +3,7 @@
   "exclude": ["node_modules"],
   "compilerOptions": {
     "module": "esnext",
-    "lib": ["esnext"],
+    "lib": ["esnext", "DOM"],
     "moduleResolution": "node",
     "esModuleInterop": true,
     "strict": true,
@@ -11,7 +11,7 @@
     "outDir": "./lib",
     "declaration": true,
     "emitDeclarationOnly": true,
-    "types": ["jest"],
+    "types": ["jest", "node"],
     "skipLibCheck": true,
     "typeRoots": ["./node_modules/@types"]
   }

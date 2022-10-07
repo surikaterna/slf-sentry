@@ -1,4 +1,5 @@
-import { captureException, captureMessage, init, SeverityLevel, withScope } from '@sentry/node';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { SeverityLevel } from '@sentry/browser';
 import { Event } from 'slf';
 
 export interface CreateSlfSentryLoggerOptions {
@@ -6,19 +7,23 @@ export interface CreateSlfSentryLoggerOptions {
   level?: string;
   environment?: string;
   levels?: Array<string>;
+  mode?: 'node' | 'browser';
 }
 
 let isInitialized = false;
 
-export default function createSlfSentryDriver(
+export default async function createSlfSentryDriver(
   sentryUrl: string,
   {
     debug,
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
     environment = process.env.SENTRY_ENV ?? 'dev',
     level = 'error',
-    levels = ['error']
+    levels = ['error'],
+    mode = 'node'
   }: CreateSlfSentryLoggerOptions = {}
 ) {
+  const { init, captureException, captureMessage, withScope } = await import(`@sentry/${mode}`) as typeof import('@sentry/browser');
   const levelIndex = levels.indexOf(level);
 
   if (!isInitialized) {
@@ -31,9 +36,9 @@ export default function createSlfSentryDriver(
       });
       isInitialized = true;
     } catch (err) {
-      // eslint-disable-next-line no-console
+      // eslint-disable-next-line no-console, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
       console.log('Failed to initialize logging to Sentry with the given url: %s', sentryUrl);
-      // eslint-disable-next-line no-console
+      // eslint-disable-next-line no-console, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
       console.error(err);
     }
   }

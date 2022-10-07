@@ -41,3 +41,23 @@ LoggerFactory.setFactory(createSlfDriver(process.env.SENTRY_URL, {
   levels: ['warn', 'error']
 }));
 ```
+
+### Simple usage
+```typescript
+import { LoggerFactory } from 'slf';
+import createSlfDriver from 'slf-sentry';
+
+LoggerFactory.setFactory(createSlfDriver(process.env.SENTRY_URL));
+```
+
+### Browser usage
+If you are using `slf-sentry` in the browser, ensure to enable the option for browsing support.
+
+```typescript
+import { LoggerFactory } from 'slf';
+import createSlfDriver from 'slf-sentry';
+
+LoggerFactory.setFactory(createSlfDriver(process.env.SENTRY_URL, {
+  mode: 'browser' // <--- enables browser support
+}));
+```
