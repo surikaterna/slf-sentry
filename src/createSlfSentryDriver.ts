@@ -16,7 +16,7 @@ export default async function createSlfSentryDriver(
   sentryUrl: string,
   {
     debug,
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/ban-ts-comment
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
     environment = process.env.SENTRY_ENV ?? 'dev',
     level = 'error',
     levels = ['error'],
@@ -36,12 +36,8 @@ export default async function createSlfSentryDriver(
       });
       isInitialized = true;
     } catch (err) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       // eslint-disable-next-line no-console, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
       console.log('Failed to initialize logging to Sentry with the given url: %s', sentryUrl);
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       // eslint-disable-next-line no-console, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
       console.error(err);
     }
