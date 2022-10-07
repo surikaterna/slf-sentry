@@ -34,11 +34,11 @@
   },
   "homepage": "https://github.com/surikaterna/slf-sentry#readme",
   "devDependencies": {
+    "@sentry/types": "^7.14.2",
     "@swc/cli": "^0.1.57",
     "@swc/core": "^1.2.248",
     "@swc/jest": "^0.2.22",
     "@types/jest": "^29.0.0",
-    "@types/node": "^18.7.15",
     "concurrently": "^7.3.0",
     "eslint": "^8.23.0",
     "eslint-config-surikat": "^4.0.0",
