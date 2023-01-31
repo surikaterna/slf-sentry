@@ -1,4 +1,4 @@
-import { captureException, captureMessage, init, SeverityLevel, withScope } from '@sentry/node';
+import { captureException, captureMessage, init, SeverityLevel, withScope, Integrations } from '@sentry/node';
 import { Event } from 'slf';
 
 export interface CreateSlfSentryLoggerOptions {
@@ -6,18 +6,14 @@ export interface CreateSlfSentryLoggerOptions {
   level?: string;
   environment?: string;
   levels?: Array<string>;
+  disableIntegrations?: Array<keyof typeof Integrations>;
 }
 
 let isInitialized = false;
 
 export default function createSlfSentryDriver(
   sentryUrl: string,
-  {
-    debug,
-    environment = process.env.SENTRY_ENV ?? 'dev',
-    level = 'error',
-    levels = ['error']
-  }: CreateSlfSentryLoggerOptions = {}
+  { debug, environment = process.env.SENTRY_ENV ?? 'dev', level = 'error', levels = ['error'], disableIntegrations }: CreateSlfSentryLoggerOptions = {}
 ) {
   const levelIndex = levels.indexOf(level);
 
@@ -27,7 +23,15 @@ export default function createSlfSentryDriver(
         dsn: sentryUrl,
         tracesSampleRate: 1.0,
         debug: debug ?? ['fat', 'dev'].includes(environment.toLowerCase()),
-        environment
+        environment,
+        integrations(integrations) {
+          return integrations.filter((integration) => {
+            if (disableIntegrations) {
+              return !disableIntegrations.includes(integration.name as keyof typeof Integrations);
+            }
+            return true;
+          });
+        }
       });
       isInitialized = true;
     } catch (err) {
