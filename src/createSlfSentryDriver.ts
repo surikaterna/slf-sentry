@@ -1,18 +1,16 @@
 import { captureException, captureMessage, init, SeverityLevel, withScope, Integrations } from '@sentry/node';
 import { Event } from 'slf';
 
+type MappedIntegrationsOptions = {
+  [key in keyof typeof Integrations]: ConstructorParameters<typeof Integrations[key]>[0];
+};
+
 export interface CreateSlfSentryLoggerOptions {
   debug?: boolean;
   level?: string;
   environment?: string;
   levels?: Array<string>;
-  integrationsOptions?: {
-    Http?: ConstructorParameters<typeof Integrations['Http']>['0'];
-    OnUncaughtException?: ConstructorParameters<typeof Integrations['OnUncaughtException']>['0'];
-    OnUnhandledRejection?: ConstructorParameters<typeof Integrations['OnUnhandledRejection']>['0'];
-    ContextLines?: ConstructorParameters<typeof Integrations['ContextLines']>['0'];
-    InboundFilters?: ConstructorParameters<typeof Integrations['InboundFilters']>['0'];
-  };
+  integrationsOptions?: Partial<MappedIntegrationsOptions>;
 }
 
 let isInitialized = false;
