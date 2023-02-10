@@ -89,14 +89,3 @@ export default function createSlfSentryDriver(
     });
   };
 }
-
-createSlfSentryDriver('', {
-  integrationsOptions: {
-    OnUncaughtException: {
-      onFatalError: (error) => {
-        console.error('fatal error', error);
-      }
-    },
-    ContextLines: {}
-  }
-});
