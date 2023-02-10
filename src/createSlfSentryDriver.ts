@@ -1,4 +1,4 @@
-import { captureException, captureMessage, init, SeverityLevel, withScope } from '@sentry/node';
+import { captureException, captureMessage, init, SeverityLevel, withScope, Integrations } from '@sentry/node';
 import { Event } from 'slf';
 
 export interface CreateSlfSentryLoggerOptions {
@@ -6,18 +6,20 @@ export interface CreateSlfSentryLoggerOptions {
   level?: string;
   environment?: string;
   levels?: Array<string>;
+  integrationsOptions?: {
+    Http?: ConstructorParameters<typeof Integrations['Http']>['0'];
+    OnUncaughtException?: ConstructorParameters<typeof Integrations['OnUncaughtException']>['0'];
+    OnUnhandledRejection?: ConstructorParameters<typeof Integrations['OnUnhandledRejection']>['0'];
+    ContextLines?: ConstructorParameters<typeof Integrations['ContextLines']>['0'];
+    InboundFilters?: ConstructorParameters<typeof Integrations['InboundFilters']>['0'];
+  };
 }
 
 let isInitialized = false;
 
 export default function createSlfSentryDriver(
   sentryUrl: string,
-  {
-    debug,
-    environment = process.env.SENTRY_ENV ?? 'dev',
-    level = 'error',
-    levels = ['error']
-  }: CreateSlfSentryLoggerOptions = {}
+  { debug, environment = process.env.SENTRY_ENV ?? 'dev', level = 'error', levels = ['error'], integrationsOptions }: CreateSlfSentryLoggerOptions = {}
 ) {
   const levelIndex = levels.indexOf(level);
 
@@ -27,7 +29,14 @@ export default function createSlfSentryDriver(
         dsn: sentryUrl,
         tracesSampleRate: 1.0,
         debug: debug ?? ['fat', 'dev'].includes(environment.toLowerCase()),
-        environment
+        environment,
+        integrations: [
+          new Integrations.Http(integrationsOptions?.Http),
+          new Integrations.OnUncaughtException(integrationsOptions?.OnUncaughtException),
+          new Integrations.OnUnhandledRejection(integrationsOptions?.OnUnhandledRejection),
+          new Integrations.ContextLines(integrationsOptions?.ContextLines),
+          new Integrations.InboundFilters(integrationsOptions?.InboundFilters)
+        ]
       });
       isInitialized = true;
     } catch (err) {
@@ -80,3 +89,14 @@ export default function createSlfSentryDriver(
     });
   };
 }
+
+createSlfSentryDriver('', {
+  integrationsOptions: {
+    OnUncaughtException: {
+      onFatalError: (error) => {
+        console.error('fatal error', error);
+      }
+    },
+    ContextLines: {}
+  }
+});
