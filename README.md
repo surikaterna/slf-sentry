@@ -41,3 +41,22 @@ LoggerFactory.setFactory(createSlfDriver(process.env.SENTRY_URL, {
   levels: ['warn', 'error']
 }));
 ```
+
+### Overriding Integrations
+Node sentry has integrations which can be found [here](https://docs.sentry.io/platforms/node/configuration/integrations/default-integrations), these have options which you can configure for your own liking.
+
+You can modify these options when creating the driver
+```ts
+import debug from 'debug';
+import { LoggerFactory } from 'slf';
+import createSlfDriver from 'slf-sentry';
+
+debug.enable('viewdb:*');
+LoggerFactory.setFactory(createSlfDriver(process.env.SENTRY_URL, {
+  integrationsOptions: {
+    OnUncaughtException: {
+      onFatalError: (error) => {}
+    }
+  }
+}));
+```
