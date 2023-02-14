@@ -1,4 +1,4 @@
-import { captureException, captureMessage, init, SeverityLevel, withScope, Integrations } from '@sentry/node';
+import { captureException, captureMessage, init, Integrations, SeverityLevel, withScope } from '@sentry/node';
 import { Event } from 'slf';
 import createIntegrationOptions from './createIntegrationOptions';
 
