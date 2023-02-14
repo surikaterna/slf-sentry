@@ -1,7 +1,8 @@
 import { captureException, captureMessage, init, SeverityLevel, withScope, Integrations } from '@sentry/node';
 import { Event } from 'slf';
+import createIntegrationOptions from './createIntegrationOptions';
 
-type MappedIntegrationsOptions = {
+export type IntegrationsOptions = {
   [key in keyof typeof Integrations]: ConstructorParameters<typeof Integrations[key]>[0];
 };
 
@@ -10,7 +11,7 @@ export interface CreateSlfSentryLoggerOptions {
   level?: string;
   environment?: string;
   levels?: Array<string>;
-  integrationsOptions?: Partial<MappedIntegrationsOptions>;
+  integrationsOptions?: Partial<IntegrationsOptions>;
 }
 
 let isInitialized = false;
@@ -28,13 +29,9 @@ export default function createSlfSentryDriver(
         tracesSampleRate: 1.0,
         debug: debug ?? ['fat', 'dev'].includes(environment.toLowerCase()),
         environment,
-        integrations: [
-          new Integrations.Http(integrationsOptions?.Http),
-          new Integrations.OnUncaughtException(integrationsOptions?.OnUncaughtException),
-          new Integrations.OnUnhandledRejection(integrationsOptions?.OnUnhandledRejection),
-          new Integrations.ContextLines(integrationsOptions?.ContextLines),
-          new Integrations.InboundFilters(integrationsOptions?.InboundFilters)
-        ]
+        // eslint-disable-next-line max-len
+        // @ts-expect-error ts(2322) - Integration type from @sentry/types is not compatible with @sentry/node's Integration type, even if they are the same type from same library
+        integrations: createIntegrationOptions(integrationsOptions)
       });
       isInitialized = true;
     } catch (err) {
