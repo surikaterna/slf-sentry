@@ -1,5 +1,4 @@
 import { Integrations } from '@sentry/node';
-import type {} from '@sentry/node/types';
 import type { Integration, IntegrationClass } from '@sentry/types';
 import type { IntegrationsOptions } from './createSlfSentryDriver';
 
