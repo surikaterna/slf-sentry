@@ -34,6 +34,7 @@
   },
   "homepage": "https://github.com/surikaterna/slf-sentry#readme",
   "devDependencies": {
+    "@sentry/types": "^7.37.0",
     "@swc/cli": "^0.1.57",
     "@swc/core": "^1.2.248",
     "@swc/jest": "^0.2.22",
