@@ -7,13 +7,14 @@ export interface CreateSlfSentryLoggerOptions {
   environment?: string;
   levels?: Array<string>;
   release?: string;
+  shouldIgnore?: (event: Event) => boolean;
 }
 
 let isInitialized = false;
 
 export default function createSlfSentryDriver(
   sentryUrl: string,
-  { debug, environment = process.env.SENTRY_ENV ?? 'dev', level = 'error', levels = ['error'], release }: CreateSlfSentryLoggerOptions = {}
+  { debug, environment = process.env.SENTRY_ENV ?? 'dev', level = 'error', levels = ['error'], release, shouldIgnore }: CreateSlfSentryLoggerOptions = {}
 ) {
   const levelIndex = levels.indexOf(level);
 
@@ -36,7 +37,7 @@ export default function createSlfSentryDriver(
   }
 
   function getErrorIfAny(event: Event): Error | undefined {
-    return event.params.find((param) => param instanceof Error) as Error | undefined;
+    return event.params.find((param: unknown) => param instanceof Error) as Error | undefined;
   }
 
   function checkIsEventLevelSameOrAbove(eventLogLevel: string): boolean {
@@ -44,8 +45,20 @@ export default function createSlfSentryDriver(
     return levelIndex <= eventLevelIndex;
   }
 
+  function checkIsIgnoredError(event: Event): boolean {
+    try {
+      return shouldIgnore?.(event) ?? false;
+    } catch (err) {
+      return false;
+    }
+  }
+
   return (event: Event) => {
     if (!checkIsEventLevelSameOrAbove(event.level)) {
+      return;
+    }
+
+    if (checkIsIgnoredError(event)) {
       return;
     }
 
