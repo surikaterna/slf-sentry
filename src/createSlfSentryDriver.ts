@@ -6,18 +6,14 @@ export interface CreateSlfSentryLoggerOptions {
   level?: string;
   environment?: string;
   levels?: Array<string>;
+  release?: string;
 }
 
 let isInitialized = false;
 
 export default function createSlfSentryDriver(
   sentryUrl: string,
-  {
-    debug,
-    environment = process.env.SENTRY_ENV ?? 'dev',
-    level = 'error',
-    levels = ['error']
-  }: CreateSlfSentryLoggerOptions = {}
+  { debug, environment = process.env.SENTRY_ENV ?? 'dev', level = 'error', levels = ['error'], release }: CreateSlfSentryLoggerOptions = {}
 ) {
   const levelIndex = levels.indexOf(level);
 
@@ -27,7 +23,8 @@ export default function createSlfSentryDriver(
         dsn: sentryUrl,
         tracesSampleRate: 1.0,
         debug: debug ?? ['fat', 'dev'].includes(environment.toLowerCase()),
-        environment
+        environment,
+        release
       });
       isInitialized = true;
     } catch (err) {
