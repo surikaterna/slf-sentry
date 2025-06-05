@@ -38,6 +38,10 @@ debug.enable('viewdb:*');
 LoggerFactory.setFactory(createSlfDriver(process.env.SENTRY_URL, {
   level: 'warn',
   environment: 'fat',
-  levels: ['warn', 'error']
+  levels: ['warn', 'error'],
+  tags: {
+    instance: 'viewdb1',
+    anotherTag: 'anotherValue',
+  }
 }));
 ```

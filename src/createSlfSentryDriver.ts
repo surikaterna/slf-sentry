@@ -1,4 +1,4 @@
-import { captureException, captureMessage, init, SeverityLevel, withScope } from '@sentry/node';
+import { captureException, captureMessage, init, setTag, SeverityLevel, withScope } from '@sentry/node';
 import { Event } from 'slf';
 
 export interface CreateSlfSentryLoggerOptions {
@@ -8,24 +8,30 @@ export interface CreateSlfSentryLoggerOptions {
   levels?: Array<string>;
   release?: string;
   shouldIgnore?: (event: Event) => boolean;
+  tags?: Record<string, string | number | boolean>;
 }
 
 let isInitialized = false;
 
 export default function createSlfSentryDriver(
   sentryUrl: string,
-  { debug, environment = process.env.SENTRY_ENV ?? 'dev', level = 'error', levels = ['error'], release, shouldIgnore }: CreateSlfSentryLoggerOptions = {}
+  { debug, environment = process.env.SENTRY_ENV ?? 'dev', level = 'error', levels = ['error'], release, shouldIgnore, tags }: CreateSlfSentryLoggerOptions = {}
 ) {
   const levelIndex = levels.indexOf(level);
 
   if (!isInitialized) {
     try {
+      if (tags) {
+        Object.entries(tags).forEach(([key, value]) => {
+          setTag(key, value);
+        });
+      }
       init({
         dsn: sentryUrl,
         tracesSampleRate: 1.0,
         debug: debug ?? ['fat', 'dev'].includes(environment.toLowerCase()),
         environment,
-        release
+        release,
       });
       isInitialized = true;
     } catch (err) {
