@@ -31,7 +31,7 @@ export default function createSlfSentryDriver(
         tracesSampleRate: 1.0,
         debug: debug ?? ['fat', 'dev'].includes(environment.toLowerCase()),
         environment,
-        release,
+        release
       });
       isInitialized = true;
     } catch (err) {
